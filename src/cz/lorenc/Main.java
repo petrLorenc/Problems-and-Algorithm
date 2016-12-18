@@ -17,11 +17,15 @@ public class Main {
         List<LoadProblem> problems = FileHelper.proceedFileTask("./data/in/knap_40.inst.dat");
 
         LoadProblem loadProblem = problems.get(48);
+
         GA ga = new GA(50,loadProblem.getItems(),loadProblem.getCapacity());
-        ga.evolution(500);
+        int geneticResult = ga.evolution(500);
 
-
-
-        System.out.println("Dynammic solution says:" + DynamicProgramming.dynamicProgramming(loadProblem));
+        System.out.println(loadProblem);
+        System.out.println(ga);
+        int dynamicResult = DynamicProgramming.dynamicProgramming(loadProblem);
+        System.out.println("Ideální hodnota řešení:" + dynamicResult);
+        System.out.println("Genetická hodnota řešení: " + geneticResult);
+        System.out.println("Relativní chyba:" + ((dynamicResult - geneticResult) / dynamicResult));
     }
 }

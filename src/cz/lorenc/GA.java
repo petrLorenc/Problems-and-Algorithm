@@ -12,6 +12,12 @@ import java.util.List;
  * Created by petr.lorenc on 09.12.16.
  */
 public class GA {
+    public static final int SIZE_OF_POPULATION = 50;
+    public static final int NUMBER_OF_STEP_IN_EVOLUTION = 500;
+    public static final boolean ROULETE_SELECTION = false;
+    public static final int SIZE_OF_TOURNAMENT = 7;
+
+
     public static final float PROBABILITY_CROSSOVER = 0.85f;
     public static final float PROBABILITY_MUTATION = 0.1f;
 
@@ -36,7 +42,7 @@ public class GA {
         this.capacity = capacity;
     }
 
-    public void evolution(int numberOfGeneration){
+    public int evolution(int numberOfGeneration){
         int bestFitnessOverAll = 0;
         Chromosome bestChromozomeOverAll = null;
 
@@ -78,10 +84,10 @@ public class GA {
             bestScores.add(currentBestFitness);
             worstScores.add(currentWorstFitness);
             averageScores.add(currentAverageFitness);
-            System.out.println("Best in generation :" + currentBestFitness);
-            System.out.println("Worst in generation :" + currentWorstFitness);
-            System.out.println("Average in generation :" + currentAverageFitness);
-            System.out.println("--");
+//            System.out.println("Best in generation :" + currentBestFitness);
+//            System.out.println("Worst in generation :" + currentWorstFitness);
+//            System.out.println("Average in generation :" + currentAverageFitness);
+//            System.out.println("--");
 
             if(currentBestFitness > bestFitnessOverAll){
                 bestFitnessOverAll = currentBestFitness;
@@ -89,18 +95,24 @@ public class GA {
             }
 
         }
-        System.out.println("Overall best fitness in evolution: " + bestFitnessOverAll);
-        for (int i = 0; i < bestChromozomeOverAll.getVariationOfSolution().length; i++) {
-            System.out.println(items.get(i) + "\t=\t"+bestChromozomeOverAll.getVariationOfSolution()[i]);
-        }
+//        for (int i = 0; i < bestChromozomeOverAll.getVariationOfSolution().length; i++) {
+//            System.out.println(items.get(i) + "\t=\t"+bestChromozomeOverAll.getVariationOfSolution()[i]);
+//        }
 
+        //have to reasign because of lambda expression
         int finalBestFitnessOverAll = bestFitnessOverAll;
         SwingUtilities.invokeLater(() -> Graph.createAndShowGui(bestScores,averageScores,worstScores, finalBestFitnessOverAll));
+        return bestFitnessOverAll;
     }
 
     private Population oneIteration(Population orinignal){
         //selection
-        List<Chromosome> rouleteSelectionChromozomes = orinignal.rouleteSelection(items, capacity);
+        List<Chromosome> rouleteSelectionChromozomes = null;
+        if(ROULETE_SELECTION) {
+            rouleteSelectionChromozomes = orinignal.rouleteSelection(items, capacity);
+        }else{
+            rouleteSelectionChromozomes = orinignal.tournamentSelection(items, capacity, SIZE_OF_TOURNAMENT);
+        }
         List<Chromosome> crossOverPopulation = new ArrayList<>();
 
         //krizeni
@@ -150,4 +162,17 @@ public class GA {
         }
         return bestFitness;
     }
+
+    public static String getDescriptionOfParam(){
+        StringBuilder builder = new StringBuilder();
+        builder.append("Velikost populace:" + SIZE_OF_POPULATION + "\n");
+        builder.append("Počet kroků evoluce:" + NUMBER_OF_STEP_IN_EVOLUTION + "\n");
+        builder.append("Pravděpodobnost křížení:" + PROBABILITY_CROSSOVER + "\n");
+        builder.append("Pravděpodobnost mutace:" + PROBABILITY_MUTATION + "\n");
+        builder.append("Elitismus:" + ELITISMUS + "\n");
+        builder.append("Selekční algoritmus:" + (ROULETE_SELECTION ? "RULETA": "TURNAJ" ) + "\n");
+        builder.append("Velikost turnaje (pokud vybrána turnajová selekce)" + SIZE_OF_TOURNAMENT + "\n");
+        return builder.toString();
+    }
+
 }

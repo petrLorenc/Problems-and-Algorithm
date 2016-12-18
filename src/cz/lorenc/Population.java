@@ -32,23 +32,28 @@ public class Population {
         this.population = population;
     }
 
-    public List<Chromosome> tournamentSelection(int sizeOfTournament, List<Item> items){
-        List<Chromosome> tournament = new ArrayList<>(sizeOfTournament);
-        for (int i = 0; i < sizeOfTournament; i++) {
-            int randomSelect = Main.rnd.nextInt(sizeOfTournament);
-            tournament.add(getPopulation().get(randomSelect));
-        }
-
-        int bestFitness = -1;
-        int bestIndex = 0;
-        for (int i = 0; i < tournament.size(); i++) {
-            int actualFitness = tournament.get(i).getFitness(items);
-            if(actualFitness > bestFitness){
-                bestFitness = actualFitness;
-                bestIndex = i;
+    public List<Chromosome> tournamentSelection(List<Item> items, int capacity, int sizeOfTournament){
+        List<Chromosome> newGeneration = new ArrayList<>();
+        do {
+            List<Chromosome> tournament = new ArrayList<>(sizeOfTournament);
+            for (int i = 0; i < sizeOfTournament; i++) {
+                int randomSelect = Main.rnd.nextInt(sizeOfTournament);
+                tournament.add(getPopulation().get(randomSelect));
             }
-        }
-        return Stream.of(tournament.get(bestIndex)).collect(Collectors.toList());
+
+            int bestFitness = -1;
+            int bestIndex = 0;
+            for (int i = 0; i < tournament.size(); i++) {
+                int actualFitness = tournament.get(i).getFitness(items, capacity);
+                if (actualFitness > bestFitness) {
+                    bestFitness = actualFitness;
+                    bestIndex = i;
+                }
+            }
+            newGeneration.add(tournament.get(bestIndex));
+        }while(newGeneration.size() < getPopulation().size());
+
+        return newGeneration;
     }
 
     public List<Chromosome> rouleteSelection(List<Item> items, int capacity){

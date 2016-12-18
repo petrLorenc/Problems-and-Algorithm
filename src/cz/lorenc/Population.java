@@ -105,6 +105,9 @@ public class Population {
     }
 
     private int linearScaling(int localMax, int localMin, int actual){
+        if(localMax == localMin){
+            return (int) GA.NEW_MIN;
+        }
         int x = (int) ((GA.NEW_MIN+(actual - localMin))*((GA.NEW_MAX - GA.NEW_MIN)/(localMax-localMin)));
         return x;
     }

@@ -18,11 +18,11 @@ public class Main {
 
         LoadProblem loadProblem = problems.get(48);
 
-        GA ga = new GA(50,loadProblem.getItems(),loadProblem.getCapacity());
-        int geneticResult = ga.evolution(500);
+        GA ga = new GA(GA.SIZE_OF_POPULATION,loadProblem.getItems(),loadProblem.getCapacity());
+        int geneticResult = ga.evolution(GA.NUMBER_OF_STEP_IN_EVOLUTION);
 
         System.out.println(loadProblem);
-        System.out.println(ga);
+        System.out.println(GA.getDescriptionOfParam());
         int dynamicResult = DynamicProgramming.dynamicProgramming(loadProblem);
         System.out.println("Ideální hodnota řešení:" + dynamicResult);
         System.out.println("Genetická hodnota řešení: " + geneticResult);

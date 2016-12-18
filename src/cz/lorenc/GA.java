@@ -12,14 +12,15 @@ import java.util.List;
  * Created by petr.lorenc on 09.12.16.
  */
 public class GA {
+    // PARAMETRY K UPRAVOVANI------------------------------------------------------------------
     public static final int SIZE_OF_POPULATION = 50;
     public static final int NUMBER_OF_STEP_IN_EVOLUTION = 500;
-    public static final boolean ROULETE_SELECTION = false;
-    public static final int SIZE_OF_TOURNAMENT = 7;
+    public static final boolean ROULETE_SELECTION = true;
+    public static final int SIZE_OF_TOURNAMENT = 3;
 
 
     public static final float PROBABILITY_CROSSOVER = 0.85f;
-    public static final float PROBABILITY_MUTATION = 0.1f;
+    public static final float PROBABILITY_MUTATION = 0.01f;
 
     // for lineat scaling -> pri rizeni selekciho tlaku
     public static final float NEW_MAX = 1000;
@@ -27,7 +28,7 @@ public class GA {
 
     public static final boolean ELITISMUS = false;
     public static final int ELITISMUS_LIMIT = 10; // what is considered to be elite - not taken only best one
-
+    //-----------------------------------------------------------------------------------------
 
     Population population;
     int sizeOfPopulation;
@@ -107,33 +108,33 @@ public class GA {
 
     private Population oneIteration(Population orinignal){
         //selection
-        List<Chromosome> rouleteSelectionChromozomes = null;
+        List<Chromosome> selectedChromozomes = null;
         if(ROULETE_SELECTION) {
-            rouleteSelectionChromozomes = orinignal.rouleteSelection(items, capacity);
+            selectedChromozomes = orinignal.rouleteSelection(items, capacity);
         }else{
-            rouleteSelectionChromozomes = orinignal.tournamentSelection(items, capacity, SIZE_OF_TOURNAMENT);
+            selectedChromozomes = orinignal.tournamentSelection(items, capacity, SIZE_OF_TOURNAMENT);
         }
         List<Chromosome> crossOverPopulation = new ArrayList<>();
 
         //krizeni
-        while(crossOverPopulation.size() != rouleteSelectionChromozomes.size()){
+        while(crossOverPopulation.size() != selectedChromozomes.size()){
             int firstChoice = Main.rnd.nextInt(sizeOfPopulation / 2); // fist half of population
             int secondChoice = Main.rnd.nextInt(sizeOfPopulation / 2) + sizeOfPopulation / 2; // second half of population
 
             // pokud se hodnota pod PROBABILITY_CROSSOVER bude vybrane krizit
             if(Main.rnd.nextFloat() < PROBABILITY_CROSSOVER) {
                 crossOverPopulation.addAll(Chromosome
-                        .crossover(rouleteSelectionChromozomes.get(firstChoice),
-                                rouleteSelectionChromozomes.get(secondChoice),
+                        .crossover(selectedChromozomes.get(firstChoice),
+                                selectedChromozomes.get(secondChoice),
                                 numberOfItem));
             } else {
                 // pokud je hodnota vetsi nez PROBABILITY_CROSSOVER tak pridam originalni
-                crossOverPopulation.add(rouleteSelectionChromozomes.get(firstChoice));
-                crossOverPopulation.add(rouleteSelectionChromozomes.get(secondChoice));
+                crossOverPopulation.add(selectedChromozomes.get(firstChoice));
+                crossOverPopulation.add(selectedChromozomes.get(secondChoice));
             }
 
             // osetreni pokud bych nahodou presahl
-            while (crossOverPopulation.size() > rouleteSelectionChromozomes.size()){
+            while (crossOverPopulation.size() > selectedChromozomes.size()){
                 crossOverPopulation.remove(0);
             }
         }
@@ -165,13 +166,13 @@ public class GA {
 
     public static String getDescriptionOfParam(){
         StringBuilder builder = new StringBuilder();
-        builder.append("Velikost populace:" + SIZE_OF_POPULATION + "\n");
-        builder.append("Počet kroků evoluce:" + NUMBER_OF_STEP_IN_EVOLUTION + "\n");
-        builder.append("Pravděpodobnost křížení:" + PROBABILITY_CROSSOVER + "\n");
-        builder.append("Pravděpodobnost mutace:" + PROBABILITY_MUTATION + "\n");
-        builder.append("Elitismus:" + ELITISMUS + "\n");
-        builder.append("Selekční algoritmus:" + (ROULETE_SELECTION ? "RULETA": "TURNAJ" ) + "\n");
-        builder.append("Velikost turnaje (pokud vybrána turnajová selekce)" + SIZE_OF_TOURNAMENT + "\n");
+        builder.append("Velikost populace: " + SIZE_OF_POPULATION + "\n");
+        builder.append("Počet kroků evoluce: " + NUMBER_OF_STEP_IN_EVOLUTION + "\n");
+        builder.append("Pravděpodobnost křížení: " + PROBABILITY_CROSSOVER + "\n");
+        builder.append("Pravděpodobnost mutace: " + PROBABILITY_MUTATION + "\n");
+        builder.append("Elitismus: " + ELITISMUS + "\n");
+        builder.append("Selekční algoritmus: " + (ROULETE_SELECTION ? "RULETA": "TURNAJ" ) + "\n");
+        builder.append("Velikost turnaje (pokud vybrána turnajová selekce): " + SIZE_OF_TOURNAMENT + "\n");
         return builder.toString();
     }
 

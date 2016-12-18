@@ -3,7 +3,6 @@ package cz.lorenc;
 import cz.lorenc.model.Chromosome;
 import cz.lorenc.model.Item;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,8 +55,11 @@ public class Population {
 
         List<Chromosome> newGeneration = new ArrayList<>();
         List<Chromosome> actualGeneration = getPopulation();
+        List<Chromosome> elite = new ArrayList<>();
+
         int sumOfFitness = 0;
         List<Integer> indexes = new ArrayList<>();
+
 
         int maxFitness = 0;
         int minFitness = Integer.MAX_VALUE;
@@ -73,11 +75,21 @@ public class Population {
 
         for (int i = 0; i < actualGeneration.size(); i++) {
             int actualFitness = actualGeneration.get(i).getFitness(items,capacity);
+
+            if(GA.ELITISMUS && Math.abs(actualFitness - maxFitness) < GA.ELITISMUS_LIMIT){
+                elite.add(actualGeneration.get(i));
+            }
+
             int actualFitnessScaling = linearScaling(maxFitness,minFitness,actualFitness);
             sumOfFitness += actualFitnessScaling;
             for (int a = 0; a < actualFitnessScaling; a++) {
                 indexes.add(i);
             }
+        }
+
+
+        if(GA.ELITISMUS){
+            newGeneration.addAll(elite);
         }
 
         do{

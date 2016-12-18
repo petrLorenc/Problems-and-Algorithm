@@ -19,7 +19,8 @@ public class GA {
     public static final float NEW_MAX = 1000;
     public static final float NEW_MIN = 100;
 
-    public static final boolean ELETISMUS = true;
+    public static final boolean ELITISMUS = false;
+    public static final int ELITISMUS_LIMIT = 10; // what is considered to be elite - not taken only best one
 
 
     Population population;

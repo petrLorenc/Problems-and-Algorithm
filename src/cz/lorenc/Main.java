@@ -30,7 +30,8 @@ public class Main {
         int dynamicResult = DynamicProgramming.dynamicProgramming(loadProblem);
         System.out.println("Ideální hodnota řešení:" + dynamicResult);
         System.out.println("Genetická hodnota řešení: " + geneticResult);
-        System.out.println("Relativní chyba:" + ((dynamicResult - geneticResult) / dynamicResult));
+        int relativeError = (int) (((dynamicResult - geneticResult) / (float) dynamicResult) * 100);
+        System.out.println("Relativní chyba:" + relativeError);
 
         try(FileWriter fw = new FileWriter("data.txt", true);
             BufferedWriter bw = new BufferedWriter(fw);
@@ -40,7 +41,7 @@ public class Main {
             out.println(GA.getDescriptionOfParam());
             out.println("Ideální hodnota řešení:" + dynamicResult);
             out.println("Genetická hodnota řešení: " + geneticResult);
-            out.println("Relativní chyba:" + ((dynamicResult - geneticResult) / dynamicResult));
+            out.println("Relativní chyba:" + relativeError);
             //more code
         } catch (IOException e) {
             //exception handling left as an exercise for the reader

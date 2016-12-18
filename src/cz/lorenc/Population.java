@@ -5,8 +5,6 @@ import cz.lorenc.model.Item;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by petr.lorenc on 09.12.16.
@@ -81,14 +79,14 @@ public class Population {
         for (int i = 0; i < actualGeneration.size(); i++) {
             int actualFitness = actualGeneration.get(i).getFitness(items,capacity);
 
-            if(GA.ELITISMUS && Math.abs(actualFitness - maxFitness) < GA.ELITISMUS_LIMIT){
+            if(GA.ELITISMUS && Math.abs(actualFitness - maxFitness) < GA.ELITISMUS_TOLERANCE){
                 elite.add(actualGeneration.get(i));
-            }
-
-            int actualFitnessScaling = linearScaling(maxFitness,minFitness,actualFitness);
-            sumOfFitness += actualFitnessScaling;
-            for (int a = 0; a < actualFitnessScaling; a++) {
-                indexes.add(i);
+            } else { // dont need to choose again - already in generation
+                int actualFitnessScaling = linearScaling(maxFitness, minFitness, actualFitness);
+                sumOfFitness += actualFitnessScaling;
+                for (int a = 0; a < actualFitnessScaling; a++) {
+                    indexes.add(i);
+                }
             }
         }
 

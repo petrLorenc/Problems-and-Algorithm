@@ -16,18 +16,18 @@ public class GA {
     public static final int SIZE_OF_POPULATION = 50;
     public static final int NUMBER_OF_STEP_IN_EVOLUTION = 500;
     public static final boolean ROULETE_SELECTION = true;
-    public static final int SIZE_OF_TOURNAMENT = 3;
+    public static final int SIZE_OF_TOURNAMENT = SIZE_OF_POPULATION;
 
 
-    public static final float PROBABILITY_CROSSOVER = 0.85f;
-    public static final float PROBABILITY_MUTATION = 0.01f;
+    public static final float PROBABILITY_CROSSOVER = 0.30f;
+    public static final float PROBABILITY_MUTATION = 0.05f;
 
     // for lineat scaling -> pri rizeni selekciho tlaku
     public static final float NEW_MAX = 1000;
     public static final float NEW_MIN = 100;
 
-    public static final boolean ELITISMUS = false;
-    public static final int ELITISMUS_LIMIT = 10; // what is considered to be elite - not taken only best one
+    public static final boolean ELITISMUS = true;
+    public static final int ELITISMUS_TOLERANCE = 0; // what is considered to be elite - not taken only best one
     //-----------------------------------------------------------------------------------------
 
     Population population;
@@ -107,7 +107,7 @@ public class GA {
                 averageScores,
                 worstScores,
                 finalBestFitnessOverAll,
-                "sizePopulation" + GA.SIZE_OF_POPULATION));
+                "ELITISMUS" + GA.ELITISMUS));
         return bestFitnessOverAll;
     }
 
@@ -122,9 +122,10 @@ public class GA {
         List<Chromosome> crossOverPopulation = new ArrayList<>();
 
         //krizeni
+        int position = 0;
         while(crossOverPopulation.size() != selectedChromozomes.size()){
-            int firstChoice = Main.rnd.nextInt(sizeOfPopulation / 2); // fist half of population
-            int secondChoice = Main.rnd.nextInt(sizeOfPopulation / 2) + sizeOfPopulation / 2; // second half of population
+            int firstChoice = position; // fist half of population
+            int secondChoice = position + sizeOfPopulation / 2; // second half of population
 
             // pokud se hodnota pod PROBABILITY_CROSSOVER bude vybrane krizit
             if(Main.rnd.nextFloat() < PROBABILITY_CROSSOVER) {
@@ -137,6 +138,8 @@ public class GA {
                 crossOverPopulation.add(selectedChromozomes.get(firstChoice));
                 crossOverPopulation.add(selectedChromozomes.get(secondChoice));
             }
+
+            position += 1;
 
             // osetreni pokud bych nahodou presahl
             while (crossOverPopulation.size() > selectedChromozomes.size()){

@@ -11,9 +11,13 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 @SuppressWarnings("serial")
@@ -129,7 +133,11 @@ public class Graph extends JPanel {
         return new Dimension(PREF_W, PREF_H);
     }
 
-    public static void createAndShowGui(List<Integer> scoresBest,List<Integer> scoresAverage, List<Integer> scoresWorst, int MAX_SCORE) {
+    public static void createAndShowGui(List<Integer> scoresBest,
+                                        List<Integer> scoresAverage,
+                                        List<Integer> scoresWorst,
+                                        int MAX_SCORE,
+                                        String nameOfPicture) {
         Graph mainPanel = new Graph(scoresBest,scoresAverage,scoresWorst,MAX_SCORE);
 
         JFrame frame = new JFrame("DrawGraph");
@@ -138,5 +146,15 @@ public class Graph extends JPanel {
         frame.pack();
         frame.setLocationByPlatform(true);
         frame.setVisible(true);
+
+        //saving picture
+        BufferedImage img = new BufferedImage(frame.getWidth(), frame.getHeight(), BufferedImage.TYPE_INT_RGB);
+        frame.paint(img.getGraphics());
+        File outputfile = new File(nameOfPicture +".png");
+        try {
+            ImageIO.write(img, "png", outputfile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

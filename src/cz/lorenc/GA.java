@@ -102,7 +102,12 @@ public class GA {
 
         //have to reasign because of lambda expression
         int finalBestFitnessOverAll = bestFitnessOverAll;
-        SwingUtilities.invokeLater(() -> Graph.createAndShowGui(bestScores,averageScores,worstScores, finalBestFitnessOverAll));
+        SwingUtilities.invokeLater(() -> Graph.createAndShowGui(
+                bestScores,
+                averageScores,
+                worstScores,
+                finalBestFitnessOverAll,
+                "sizePopulation" + GA.SIZE_OF_POPULATION));
         return bestFitnessOverAll;
     }
 
